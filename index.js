@@ -91,9 +91,9 @@ module.exports = function(options) {
    * getCache
    */
   function * getCache(ctx, key, tkey) {
-    var value = yield redisClient.get(key),
-      type,
-      ok = false;
+    var value = JSON.parse(yield redisClient.get(key)), 
+        type,
+        ok = false;
 
     if (value) {
       ctx.response.status = 200;
