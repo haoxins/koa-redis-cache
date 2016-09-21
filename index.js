@@ -21,9 +21,12 @@ module.exports = function(options) {
   /**
    * redisClient
    */
-  redisOptions.port = redisOptions.port || 6379
-  redisOptions.host = redisOptions.host || 'localhost'
-  const redisClient = wrapper(Redis.createClient(redisOptions.port, redisOptions.host, redisOptions.options))
+  redisOptions.options = redisOptions.options || {}
+  if(!redisOptions.options.url) {
+    redisOptions.options.port = redisOptions.port || 6379
+    redisOptions.options.host = redisOptions.host || 'localhost'
+  }
+  const redisClient = wrapper(Redis.createClient(redisOptions.options))
   redisClient.on('error', (error)=> {
     redisAvailable = false
     onerror(error)
