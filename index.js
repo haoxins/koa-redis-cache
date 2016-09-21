@@ -39,7 +39,8 @@ module.exports = function(options) {
     const ctx = this
     const url = ctx.request.url
     const path = ctx.request.path
-    const key = prefix + url
+    const resolvedPrefix = typeof prefix === 'function' ? prefix.call(ctx, ctx) : prefix;
+    const key = resolvedPrefix + url
     const tkey = key + ':type'
     let match = false
     let routeExpire = false

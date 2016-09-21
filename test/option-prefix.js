@@ -87,4 +87,78 @@ describe('## options - prefix', () => {
         })
     })
   })
+
+  describe('# dynamic prefix', () => {
+    var options = {
+      prefix: function(ctx) {
+        // You won't actually want to directly use user-supplied parameters in cache keys for security reasons
+        return 'dynamic-prefix-user-' + ctx.request.header['x-user'] + '-koa-redis-cache:'
+      }
+    }
+    var app = koa()
+    app.use(cache(options))
+    app.use(function* () {
+      this.body = {
+        name: 'dynamic prefix user ' + this.request.header['x-user']
+      }
+    })
+
+    app = app.listen(3011)
+
+    it('no cache prefix 1', (done) => {
+      request(app)
+        .get('/prefix/json')
+        .set('X-User', 'one')
+        .end((err, res) => {
+          should.not.exist(err)
+          res.status.should.equal(200)
+          res.headers['content-type'].should.equal('application/json; charset=utf-8')
+          should.not.exist(res.headers['x-koa-redis-cache'])
+          res.body.name.should.equal('dynamic prefix user one')
+          done()
+        })
+    })
+
+    it('from cache prefix 1', (done) => {
+      request(app)
+        .get('/prefix/json')
+        .set('X-User', 'one')
+        .end((err, res) => {
+          should.not.exist(err)
+          res.status.should.equal(200)
+          res.headers['content-type'].should.equal('application/json; charset=utf-8')
+          res.headers['x-koa-redis-cache'].should.equal('true')
+          res.body.name.should.equal('dynamic prefix user one')
+          done()
+        })
+    })
+
+    it('no cache prefix 2', (done) => {
+      request(app)
+        .get('/prefix/json')
+        .set('X-User', 'two')
+        .end((err, res) => {
+          should.not.exist(err)
+          res.status.should.equal(200)
+          res.headers['content-type'].should.equal('application/json; charset=utf-8')
+          should.not.exist(res.headers['x-koa-redis-cache'])
+          res.body.name.should.equal('dynamic prefix user two')
+          done()
+        })
+    })
+
+    it('from cache prefix 2', (done) => {
+      request(app)
+        .get('/prefix/json')
+        .set('X-User', 'two')
+        .end((err, res) => {
+          should.not.exist(err)
+          res.status.should.equal(200)
+          res.headers['content-type'].should.equal('application/json; charset=utf-8')
+          res.headers['x-koa-redis-cache'].should.equal('true')
+          res.body.name.should.equal('dynamic prefix user two')
+          done()
+        })
+    })
+  })
 })

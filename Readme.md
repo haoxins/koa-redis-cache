@@ -25,8 +25,9 @@ app.use(cache(options))
 ### options
 
 * prefix
-  - type: `String`
+  - type: `String` or `Function`
   - redis key prefix, default is `koa-redis-cache:`
+  - If a function is supplied, its signature should be `function(ctx) {}` and it should return a string to use as the redis key prefix
 * expire
   - type: `Number`
   - redis expire time (second), default is `30 * 60` (30 min)
