@@ -101,6 +101,8 @@ module.exports = function(options) {
     if (value) {
       ctx.response.status = 200
       type = (yield redisClient.get(tkey)) || 'text/html'
+      // can happen if user specified return_buffers: true in redis options
+      if (Buffer.isBuffer(type)) type = type.toString()
       ctx.response.set('X-Koa-Redis-Cache', 'true')
       ctx.response.type = type
       ctx.response.body = value
@@ -128,7 +130,6 @@ module.exports = function(options) {
       // buffer
       if (body.length > maxLength) return
       yield redisClient.setex(key, expire, body)
-      yield redisClient.setex(tkey, expire, ctx.response.type)
     } else if (typeof body === 'object' && ctx.response.type === 'application/json') {
       // json
       body = JSON.stringify(body)
