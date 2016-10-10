@@ -128,6 +128,7 @@ module.exports = function(options) {
       // buffer
       if (body.length > maxLength) return
       yield redisClient.setex(key, expire, body)
+      yield redisClient.setex(tkey, expire, ctx.response.type)
     } else if (typeof body === 'object' && ctx.response.type === 'application/json') {
       // json
       body = JSON.stringify(body)
