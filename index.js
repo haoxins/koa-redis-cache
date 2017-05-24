@@ -6,25 +6,29 @@ const wrapper = require('co-redis')
 const readall = require('readall')
 const Redis = require('redis')
 
-module.exports = function(options) {
-  options = options || {}
+module.exports = function(options = {}) {
   let redisAvailable = false
-  let redisOptions = options.redis || {}
-  const prefix = options.prefix || 'koa-redis-cache:'
-  const expire = options.expire || 30 * 60 // 30 min
-  const routes = options.routes || ['(.*)']
-  const exclude = options.exclude || []
-  const passParam = options.passParam || ''
-  const maxLength = options.maxLength || Infinity
-  const onerror = options.onerror || function() {}
+  
+  const {
+    prefix = 'koa-redis-cache:',
+    expire = 30 * 60, // 30 min
+    routes = ['(.*)'],
+    exclude = [],
+    passParam = '',
+    maxLength = Infinity,
+    onerror = function() {}
+  } = options
+  const {
+    host:redisHost = 'localhost',
+    port:redisPort = 6379,
+    url:redisUrl = `redis://${redisHost}:${redisPort}/`,
+    options:redisOptions = {}
+  } = options.redis || {}
 
   /**
    * redisClient
    */
-  redisOptions.port = redisOptions.port || 6379
-  redisOptions.host = redisOptions.host || 'localhost'
-  redisOptions.url = redisOptions.url || 'redis://' + redisOptions.host + ':' + redisOptions.port + '/'
-  const redisClient = wrapper(Redis.createClient(redisOptions.url, redisOptions.options))
+  const redisClient = wrapper(Redis.createClient(redisUrl, redisOptions))
   redisClient.on('error', (error)=> {
     redisAvailable = false
     onerror(error)
@@ -37,8 +41,7 @@ module.exports = function(options) {
   })
 
   return async function cache(ctx, next) {
-    const url = ctx.request.url
-    const path = ctx.request.path
+    const { url, path } = ctx.request
     const resolvedPrefix = typeof prefix === 'function' ? prefix.call(ctx, ctx) : prefix;
     const key = resolvedPrefix + url
     const tkey = key + ':type'
