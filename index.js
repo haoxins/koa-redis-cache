@@ -71,7 +71,7 @@ module.exports = function(options = {}) {
       }
     }
 
-    if (!redisAvailable || !match || (passParam && ctx.request.query[passParam])) {
+    if (!redisAvailable || !match || (passParam && ctx.request.query[passParam]) || (ctx.request.method !== 'GET')) {
       return await next()
     }
 
