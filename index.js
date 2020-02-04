@@ -1,7 +1,7 @@
 
 'use strict'
 
-const pathToRegExp = require('path-to-regexp')
+const { pathToRegexp } = require('path-to-regexp')
 const wrapper = require('co-redis')
 const readall = require('readall')
 const crypto = require('crypto')
@@ -169,7 +169,7 @@ function paired(route, path) {
     strict: true,
   }
 
-  return pathToRegExp(route, [], options).exec(path)
+  return pathToRegexp(route, [], options).exec(path)
 }
 
 function read(stream) {
