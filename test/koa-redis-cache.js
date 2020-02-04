@@ -38,6 +38,15 @@ describe('## default options', () => {
     if (ctx.path === '/app/500') {
       ctx.status = 500
       ctx.body = 'no cache'
+      return
+    }
+    if (ctx.path === '/app/something' && ctx.method === 'GET') {
+      ctx.body = 'GET response'
+      return
+    }
+    if (ctx.path === '/app/something' && ctx.method === 'PUT') {
+      ctx.body = 'PUT response'
+      return
     }
   })
 
@@ -268,6 +277,29 @@ describe('## default options', () => {
           should.not.exist(res.headers['x-koa-redis-cache'])
           equal(res.text, 'no cache')
           done()
+        })
+    })
+  })
+
+  describe('# not GET, no cache', () => {
+    it('no cache for PUT even after GET', (done) => {
+      request(app)
+        .get('/app/something')
+        .end((getErr, getRes) => {
+          should.not.exist(getErr)
+          getRes.headers['content-type'].should.equal('text/plain; charset=utf-8')
+          should.not.exist(getRes.headers['x-koa-redis-cache'])
+          equal(getRes.text, 'GET response')
+
+          request(app)
+            .put('/app/something')
+            .end((putErr, putRes) => {
+              should.not.exist(putErr)
+              putRes.headers['content-type'].should.equal('text/plain; charset=utf-8')
+              should.not.exist(putRes.headers['x-koa-redis-cache'])
+              equal(putRes.text, 'PUT response')
+              done()
+            })
         })
     })
   })
