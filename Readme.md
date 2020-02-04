@@ -88,8 +88,8 @@ MIT
 
 [npm-img]: https://img.shields.io/npm/v/koa-redis-cache.svg?style=flat-square
 [npm-url]: https://npmjs.org/package/koa-redis-cache
-[travis-img]: https://img.shields.io/travis/coderhaoxin/koa-redis-cache.svg?style=flat-square
-[travis-url]: https://travis-ci.org/coderhaoxin/koa-redis-cache
+[travis-img]: https://img.shields.io/travis/haoxins/koa-redis-cache.svg?style=flat-square
+[travis-url]: https://travis-ci.org/haoxins/koa-redis-cache
 [coveralls-img]: https://img.shields.io/coveralls/coderhaoxin/koa-redis-cache.svg?style=flat-square
 [coveralls-url]: https://coveralls.io/r/coderhaoxin/koa-redis-cache?branch=master
 [license-img]: http://img.shields.io/badge/license-MIT-green.svg?style=flat-square
