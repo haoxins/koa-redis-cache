@@ -1,6 +1,6 @@
 {
   "name": "koa-redis-cache",
-  "version": "3.0.2",
+  "version": "3.0.3",
   "description": "a middleware for koa to cache response with redis.",
   "main": "index.js",
   "scripts": {
